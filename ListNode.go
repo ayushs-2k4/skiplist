@@ -2,19 +2,19 @@ package main
 
 import "fmt"
 
-type ListNode struct {
-	next *ListNode
-	val  int
+type ListNode[T any] struct {
+	next *ListNode[T]
+	val  T
 }
 
-func NewListNode(val int) *ListNode {
-	return &ListNode{
+func NewListNode[T any](val T) *ListNode[T] {
+	return &ListNode[T]{
 		val:  val,
 		next: nil,
 	}
 }
 
-func NewListNodeWithPrev(val int, prev *ListNode) *ListNode {
+func NewListNodeWithPrev[T any](val T, prev *ListNode[T]) *ListNode[T] {
 	newNode := NewListNode(val)
 
 	prev.next = newNode
@@ -22,7 +22,7 @@ func NewListNodeWithPrev(val int, prev *ListNode) *ListNode {
 	return newNode
 }
 
-func printLinkedList(head *ListNode) {
+func printLinkedList[T any](head *ListNode[T]) {
 	ptr := head
 
 	for ptr != nil {
@@ -33,14 +33,16 @@ func printLinkedList(head *ListNode) {
 	}
 }
 
-func GetListNodeFromStartToFinish(start, finish int) *ListNode {
+func GetListNodeFromStartToFinish[T any](
+	start T,
+	isEnd func(current, finish T) bool,
+	step func(T) T,
+	finish T,
+) *ListNode[T] {
 	head := NewListNode(start)
 	tail := head
-
-	for i := start + 1; i <= finish; i++ {
-		newNode := NewListNodeWithPrev(i, tail)
-		tail = newNode
+	for val := step(start); isEnd(val, finish); val = step(val) {
+		tail = NewListNodeWithPrev(val, tail)
 	}
-
 	return head
 }

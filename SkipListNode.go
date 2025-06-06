@@ -2,19 +2,20 @@ package main
 
 import "fmt"
 
-type SkipListNode struct {
-	next *SkipListNode
-	val  *ListNode
+type SkipListNode[T any] struct {
+	next  *SkipListNode[T]
+	below *SkipListNode[T] // address of SkipListNode of the below lane which holds the same value
+	val   *ListNode[T]
 }
 
-func NewSkipListNode(val *ListNode) *SkipListNode {
-	return &SkipListNode{
+func NewSkipListNode[T any](val *ListNode[T]) *SkipListNode[T] {
+	return &SkipListNode[T]{
 		next: nil,
 		val:  val,
 	}
 }
 
-func NewSkipListNodeWithPrev(val *ListNode, prev *SkipListNode) *SkipListNode {
+func NewSkipListNodeWithPrev[T any](val *ListNode[T], prev *SkipListNode[T]) *SkipListNode[T] {
 	newNode := NewSkipListNode(val)
 
 	prev.next = newNode
@@ -22,7 +23,9 @@ func NewSkipListNodeWithPrev(val *ListNode, prev *SkipListNode) *SkipListNode {
 	return newNode
 }
 
-func CreateExpressLine(head *ListNode, skipAmount int) *SkipListNode {
+func CreateExpressLine[T any](head *ListNode[T], skipAmount int) *SkipListNode[T] {
+	skipAmount++
+
 	currentNode := head
 	expressLineHead := NewSkipListNode(head)
 	expressLineTail := expressLineHead
@@ -41,7 +44,30 @@ func CreateExpressLine(head *ListNode, skipAmount int) *SkipListNode {
 	return expressLineHead
 }
 
-func PrintSkipList(head *SkipListNode) {
+func CreateExpressLineFromAnotherExpressLineWithConnection[T any](head *SkipListNode[T], skipAmount int) *SkipListNode[T] {
+	skipAmount++
+
+	currentNode := head
+	expressLineHead := NewSkipListNode(head.val)
+	currentNode.below = expressLineHead
+	expressLineTail := expressLineHead
+
+	for currentNode != nil {
+		for i := 0; i < skipAmount && currentNode != nil; i++ {
+			currentNode = currentNode.next
+		}
+
+		if currentNode != nil {
+			thisSkipListNode := NewSkipListNodeWithPrev(currentNode.val, expressLineTail)
+			currentNode.below = thisSkipListNode
+			expressLineTail = thisSkipListNode
+		}
+	}
+
+	return expressLineHead
+}
+
+func PrintSkipList[T any](head *SkipListNode[T]) {
 	ptr := head
 
 	for ptr != nil {

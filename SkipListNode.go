@@ -121,7 +121,7 @@ func Search[T comparable](head *SkipListNode[T], val T, isALessThanB func(a, b T
 		}
 
 		if curr != nil {
-			return Search(curr.below, val, isALessThanB)
+			return SearchInListNode(curr.val, nil, val)
 		}
 
 		return nil

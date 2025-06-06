@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"math"
 )
 
 type SkipListNode[T any] struct {
@@ -82,7 +83,7 @@ func CreateExpressLines[T any](head *ListNode[T], skipAmount int) []*SkipListNod
 
 	firstExpressLine := CreateExpressLine(head, skipAmount)
 	ans = append(ans, firstExpressLine)
-	lastCount := 100
+	lastCount := math.MaxInt
 
 	for lastCount > 2 {
 		lastExpressLine := ans[len(ans)-1]

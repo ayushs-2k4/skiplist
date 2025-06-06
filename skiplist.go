@@ -15,8 +15,8 @@ func printIsValuePresent[T int](head *SkipListNode[T], val T) {
 }
 
 func main() {
-	//head := GetListNodeFromStartToFinish(1, func(cur, end int) bool { return cur <= end }, func(i int) int { return i + 1 }, 10)
-	head := GetListNodeFromArray([]int{1, 2, 3, 4, 5})
+	head := GetListNodeFromStartToFinish(1, func(cur, end int) bool { return cur <= end }, func(i int) int { return i + 1 }, 10000)
+	//head := GetListNodeFromArray([]int{1, 2, 3, 4, 5})
 
 	//head := GetListNodeFromStartToFinish(
 	//	'a',

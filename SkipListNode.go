@@ -1,6 +1,8 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
 type SkipListNode[T any] struct {
 	next  *SkipListNode[T]
@@ -51,7 +53,7 @@ func CreateExpressLineFromAnotherExpressLineWithConnection[T any](head *SkipList
 
 	currentNode := head
 	expressLineHead := NewSkipListNode(head.val)
-	currentNode.below = expressLineHead
+	expressLineHead.below = currentNode
 	expressLineTail := expressLineHead
 
 	for currentNode != nil {
@@ -61,7 +63,7 @@ func CreateExpressLineFromAnotherExpressLineWithConnection[T any](head *SkipList
 
 		if currentNode != nil {
 			thisSkipListNode := NewSkipListNodeWithPrev(currentNode.val, expressLineTail)
-			currentNode.below = thisSkipListNode
+			thisSkipListNode.below = currentNode
 			expressLineTail = thisSkipListNode
 
 			totalSize++
@@ -92,6 +94,58 @@ func CreateExpressLines[T any](head *ListNode[T], skipAmount int) []*SkipListNod
 	}
 
 	return ans
+}
+
+func isValueInBetweenTwoValues[T comparable](a, b, val T, isALessThanB func(a, b T) bool) bool {
+	return (a == val || isALessThanB(a, val)) && (isALessThanB(val, b) || b == val)
+}
+
+func Search[T comparable](head *SkipListNode[T], val T, isALessThanB func(a, b T) bool) *ListNode[T] {
+	if head == nil {
+		return nil
+	}
+
+	if isALessThanB(val, head.val.val) { //val < head.val.val
+		return nil
+	}
+
+	if head.below == nil {
+		curr := head
+
+		for curr != nil && curr.next != nil {
+			if isValueInBetweenTwoValues(curr.val.val, curr.next.val.val, val, isALessThanB) {
+				return SearchInListNode(curr.val, curr.next.val, val)
+			}
+
+			curr = curr.next
+		}
+
+		if curr != nil {
+			return Search(curr.below, val, isALessThanB)
+		}
+
+		return nil
+	}
+
+	if head.next == nil {
+		return Search(head.below, val, isALessThanB)
+	}
+
+	curr := head
+
+	for curr != nil && curr.next != nil {
+		if isValueInBetweenTwoValues(curr.val.val, curr.next.val.val, val, isALessThanB) {
+			return Search(curr.below, val, isALessThanB)
+		}
+
+		curr = curr.next
+	}
+
+	if curr != nil {
+		return Search(curr.below, val, isALessThanB)
+	}
+
+	return nil
 }
 
 func PrintSkipList[T any](head *SkipListNode[T]) {

@@ -33,6 +33,45 @@ func printLinkedList[T any](head *ListNode[T]) {
 	}
 }
 
+func SearchInListNode[T comparable](startNode *ListNode[T], endNode *ListNode[T], val T) *ListNode[T] {
+	currentNode := startNode
+
+	for currentNode != nil && currentNode != endNode {
+		if currentNode.val == val {
+			return currentNode
+		}
+
+		currentNode = currentNode.next
+	}
+
+	if endNode == nil || currentNode == nil {
+		return nil
+	}
+
+	if endNode.val == val {
+		return endNode
+	}
+
+	return nil
+}
+
+func GetListNodeFromArray[T any](arr []T) *ListNode[T] {
+	if len(arr) == 0 {
+		return nil
+	}
+
+	head := NewListNode(arr[0])
+	tail := head
+
+	for i := 1; i < len(arr); i++ {
+		newNode := NewListNode(arr[i])
+		tail.next = newNode
+		tail = tail.next
+	}
+
+	return head
+}
+
 func GetListNodeFromStartToFinish[T any](
 	start T,
 	isEnd func(current, finish T) bool,

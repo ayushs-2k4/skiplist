@@ -7,7 +7,7 @@ func main() {
 		1,
 		func(cur, end int) bool { return cur <= end },
 		func(i int) int { return i + 1 },
-		100)
+		1000)
 
 	//head := GetListNodeFromStartToFinish(
 	//	'a',
@@ -16,13 +16,12 @@ func main() {
 	//	'z',
 	//)
 
-	skipListHead := CreateExpressLine(head, 3)
-	secondExpressLine := CreateExpressLineFromAnotherExpressLineWithConnection(skipListHead, 2)
+	expressLines := CreateExpressLines(head, 1)
+
+	for i := len(expressLines) - 1; i >= 0; i-- {
+		PrintSkipList(expressLines[i])
+		fmt.Println()
+	}
 
 	printLinkedList(head)
-	fmt.Println()
-	PrintSkipList(skipListHead)
-	fmt.Println()
-	PrintSkipList(secondExpressLine)
-	fmt.Println()
 }

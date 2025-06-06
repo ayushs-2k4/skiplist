@@ -44,8 +44,10 @@ func CreateExpressLine[T any](head *ListNode[T], skipAmount int) *SkipListNode[T
 	return expressLineHead
 }
 
-func CreateExpressLineFromAnotherExpressLineWithConnection[T any](head *SkipListNode[T], skipAmount int) *SkipListNode[T] {
+func CreateExpressLineFromAnotherExpressLineWithConnection[T any](head *SkipListNode[T], skipAmount int) (expressLine *SkipListNode[T], count int) {
 	skipAmount++
+
+	totalSize := 1
 
 	currentNode := head
 	expressLineHead := NewSkipListNode(head.val)
@@ -61,10 +63,35 @@ func CreateExpressLineFromAnotherExpressLineWithConnection[T any](head *SkipList
 			thisSkipListNode := NewSkipListNodeWithPrev(currentNode.val, expressLineTail)
 			currentNode.below = thisSkipListNode
 			expressLineTail = thisSkipListNode
+
+			totalSize++
 		}
 	}
 
-	return expressLineHead
+	return expressLineHead, totalSize
+}
+
+func CreateExpressLines[T any](head *ListNode[T], skipAmount int) []*SkipListNode[T] {
+	if skipAmount < 1 {
+		return nil
+	}
+
+	var ans []*SkipListNode[T]
+
+	firstExpressLine := CreateExpressLine(head, skipAmount)
+	ans = append(ans, firstExpressLine)
+	lastCount := 100
+
+	for lastCount > 2 {
+		lastExpressLine := ans[len(ans)-1]
+		newExpressLine, count := CreateExpressLineFromAnotherExpressLineWithConnection(lastExpressLine, skipAmount)
+
+		ans = append(ans, newExpressLine)
+
+		lastCount = count
+	}
+
+	return ans
 }
 
 func PrintSkipList[T any](head *SkipListNode[T]) {
